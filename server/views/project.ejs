@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= project.name %> - Task Manager</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <nav>
+    <h1>Task Manager</h1>
+    <div>
+      <a href="/dashboard">Back to Dashboard</a>
+      <a href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <% if(user.role === 'admin') { %>
+
+    <div class="card">
+      <h2>Add Member</h2>
+      <form action="/projects/<%= project._id %>/members" method="POST">
+        <select name="userId">
+          <% users.forEach(function(u) { %>
+            <option value="<%= u._id %>"><%= u.name %> (<%= u.role %>)</option>
+          <% }) %>
+        </select>
+        <button type="submit">Add Member</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Create Task</h2>
+      <form action="/tasks" method="POST">
+        <input type="hidden" name="projectId" value="<%= project._id %>" />
+        <input type="text" name="title" placeholder="Task Title" required />
+        <input type="date" name="dueDate" />
+        <select name="assignedTo">
+          <% project.members.forEach(function(member) { %>
+            <option value="<%= member._id %>"><%= member.name %></option>
+          <% }) %>
+        </select>
+        <button type="submit">Create Task</button>
+      </form>
+    </div>
+
+    <% } %>
+
+    <div class="card">
+      <h2>Members</h2>
+      <ul>
+        <% project.members.forEach(function(member) { %>
+          <li><%= member.name %> - <%= member.email %></li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>Tasks</h2>
+      <% if(tasks.length === 0) { %>
+        <p>No tasks yet!</p>
+      <% } else { %>
+        <div class="tasks-list">
+          <% tasks.forEach(function(task) { %>
+            <div class="task-card">
+              <h3><%= task.title %></h3>
+              <p>Status: <%= task.status %></p>
+              <p>Due: <%= task.dueDate ? task.dueDate.toDateString() : 'No due date' %></p>
+              <p>Assigned to: <%= task.assignedTo ? task.assignedTo.name : 'Unassigned' %></p>
+
+              <form action="/tasks/<%= task._id %>/status" method="POST">
+                <input type="hidden" name="projectId" value="<%= project._id %>" />
+                <select name="status">
+                  <option value="todo" <%= task.status === 'todo' ? 'selected' : '' %>>Todo</option>
+                  <option value="inprogress" <%= task.status === 'inprogress' ? 'selected' : '' %>>In Progress</option>
+                  <option value="done" <%= task.status === 'done' ? 'selected' : '' %>>Done</option>
+                </select>
+                <button type="submit">Update</button>
+              </form>
+
+              <% if(user.role === 'admin') { %>
+                <form action="/tasks/<%= task._id %>?_method=DELETE" method="POST">
+                  <button type="submit" class="btn-danger">Delete</button>
+                </form>
+              <% } %>
+
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+
+</body>
+</html>

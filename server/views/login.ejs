@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Task Manager</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <nav class="auth-nav">
+    <h1>📋 Task Manager</h1>
+  </nav>
+
+  <div class="auth-wrapper">
+    <div class="auth-container">
+      <div class="auth-header">
+        <h2>Welcome Back!</h2>
+      </div>
+
+      <% if(error) { %>
+        <div class="error-msg"><%= error %></div>
+      <% } %>
+
+      <form action="/login" method="POST">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="Enter your email" required />
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="Enter your password" required />
+        </div>
+        <button type="submit" class="auth-btn">Login →</button>
+      </form>
+
+      <p class="auth-link">Don't have an account? <a href="/signup">Sign Up</a></p>
+    </div>
+  </div>
+
+  <footer>
+    <p>Made with ❤️ by <strong>Parth Verma</strong></p>
+  </footer>
+
+</body>
+</html>
